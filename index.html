@@ -20,7 +20,7 @@
       --text-light: #6b7280;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -82,6 +82,10 @@
       gap: 4rem;
       position: relative;
       overflow: visible;
+    }
+
+    .hero-content {
+      min-width: 0;
     }
 
     .hero::before {
@@ -492,32 +496,34 @@
 
     .waitlist-form {
       display: flex;
-      gap: 0;
+      flex-direction: column;
+      gap: 0.75rem;
       max-width: 440px;
       margin: 0 auto 1rem;
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     }
 
     .waitlist-form input {
-      flex: 1;
+      width: 100%;
       padding: 1rem 1.25rem;
       border: none;
+      border-radius: 3px;
       background: white;
       font-family: 'DM Sans', sans-serif;
       font-size: 0.95rem;
       color: var(--navy);
       outline: none;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.15);
     }
 
     .waitlist-form input::placeholder { color: #aaa; }
 
     .waitlist-form button {
+      width: 100%;
       padding: 1rem 1.5rem;
       background: var(--teal);
       color: white;
       border: none;
+      border-radius: 3px;
       font-family: 'DM Sans', sans-serif;
       font-size: 0.9rem;
       font-weight: 500;
@@ -525,6 +531,7 @@
       letter-spacing: 0.04em;
       transition: background 0.2s;
       white-space: nowrap;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     }
     .waitlist-form button:hover { background: var(--teal-light); }
 
@@ -592,7 +599,7 @@
     @media (max-width: 600px) {
       .domains { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr; }
-      .waitlist-form { flex-direction: column; }
+      .waitlist-form { gap: 0.5rem; }
       footer { flex-direction: column; gap: 0.5rem; text-align: center; }
     }
   </style>
@@ -634,7 +641,7 @@
       </div>
     </div>
     <div class="hero-visual">
-      <svg class="rsm-diagram" viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="rsm-diagram" viewBox="-60 -40 600 560" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- Outer hexagon -->
         <polygon points="240,30 420,130 420,330 240,430 60,330 60,130" stroke="#1a2744" stroke-width="1.5" fill="rgba(26,39,68,0.02)" opacity="0.4"/>
         <!-- Inner connections -->
@@ -786,6 +793,7 @@
       <h2>Your healing journey,<br><em>held with care.</em></h2>
       <p>RSM is preparing to open its doors. Be among the first to experience a new kind of healing companion — one that goes all the way to the root.</p>
       <form class="waitlist-form" onsubmit="handleSubmit(event)">
+        <input type="text" placeholder="Your first name" required id="name-input" />
         <input type="email" placeholder="Your email address" required id="email-input" />
         <button type="submit">Join Waitlist</button>
       </form>
@@ -817,6 +825,7 @@
     // Waitlist form — getwaitlist.com
     async function handleSubmit(e) {
       e.preventDefault();
+      const name = document.getElementById('name-input').value;
       const email = document.getElementById('email-input').value;
       const btn = document.querySelector('.waitlist-form button');
       const form = document.querySelector('.waitlist-form');
@@ -831,6 +840,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,
+            first_name: name,
             waitlist_id: 32602,
             api_key: '3de2b14ac419e5eec7d06d0377157dd8215ec80f08794ea3f6900ac61f7fa2c4'
           })
