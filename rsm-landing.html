@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSM – Restoration Systems Mapping™</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --navy-deep: #111b33;
+      --gold: #b8972a;
+      --gold-light: #d4b04a;
+      --teal: #2a7a7a;
+      --teal-light: #3a9a9a;
+      --warm-white: #faf8f4;
+      --warm-gray: #f0ede6;
+      --text-light: #6b7280;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--warm-white);
+      color: var(--navy);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.25rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(250, 248, 244, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(26, 39, 68, 0.08);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .nav-logo svg { width: 36px; height: 36px; }
+
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-brand span {
+      font-size: 0.65rem;
+      vertical-align: super;
+      color: var(--gold);
+    }
+
+    .nav-cta {
+      background: var(--navy);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 2px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--teal); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 60%;
+      height: 120%;
+      background: radial-gradient(ellipse at center, rgba(42, 122, 122, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--navy);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      line-height: 1.75;
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--teal); transform: translateY(-1px); }
+
+    .btn-ghost {
+      color: var(--navy);
+      font-size: 0.9rem;
+      font-weight: 400;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .btn-ghost:hover { opacity: 1; }
+
+    /* HERO VISUAL */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .rsm-diagram {
+      width: 100%;
+      max-width: 480px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* PAIN SECTION */
+    .pain {
+      background: var(--navy-deep);
+      color: white;
+      padding: 6rem 3rem;
+      text-align: center;
+    }
+
+    .pain-inner { max-width: 700px; margin: 0 auto; }
+
+    .pain h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+    }
+
+    .pain h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .pain p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      opacity: 0.75;
+      font-weight: 300;
+    }
+
+    /* WHAT IS RSM */
+    .what {
+      padding: 7rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .what h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+    }
+
+    .what-intro {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-light);
+      max-width: 580px;
+      margin-bottom: 4rem;
+      font-weight: 300;
+    }
+
+    .domains {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .domain-card {
+      padding: 2rem;
+      border: 1px solid rgba(26, 39, 68, 0.1);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      background: white;
+    }
+
+    .domain-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-3px);
+    }
+
+    .domain-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--teal);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .domain-card:hover::before { opacity: 1; }
+
+    .domain-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: rgba(26, 39, 68, 0.08);
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+
+    .domain-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .domain-desc {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-light);
+      font-weight: 300;
+    }
+
+    /* KARLA STORY */
+    .story {
+      background: var(--warm-gray);
+      padding: 7rem 3rem;
+    }
+
+    .story-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .story-aside {
+      position: sticky;
+      top: 6rem;
+    }
+
+    .story-aside .section-label { margin-bottom: 1.5rem; }
+
+    .story-aside h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      line-height: 1.3;
+      color: var(--navy);
+    }
+
+    .story-aside h2 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .story-divider {
+      width: 2rem;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.5rem 0;
+    }
+
+    .story-content p {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: #444;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .story-content p:first-child {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--navy);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .story-attr {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .story-attr span {
+      display: block;
+      font-weight: 300;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text-light);
+      font-size: 0.82rem;
+      margin-top: 0.2rem;
+    }
+
+    /* HOW IT WORKS */
+    .how {
+      padding: 7rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .how-header { margin-bottom: 4rem; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 12.5%;
+      right: 12.5%;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), var(--teal));
+      opacity: 0.3;
+    }
+
+    .step {
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    .step-dot {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: var(--warm-white);
+      border: 2px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-dot span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .step h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-light);
+      font-weight: 300;
+    }
+
+    /* WAITLIST */
+    .waitlist {
+      background: var(--navy);
+      padding: 7rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waitlist::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(42,122,122,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .waitlist-inner { max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+
+    .waitlist .section-label { color: var(--gold-light); margin-bottom: 1.5rem; }
+
+    .waitlist h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      color: white;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    .waitlist h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .waitlist p {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto 1rem;
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+
+    .waitlist-form input {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border: none;
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--navy);
+      outline: none;
+    }
+
+    .waitlist-form input::placeholder { color: #aaa; }
+
+    .waitlist-form button {
+      padding: 1rem 1.5rem;
+      background: var(--teal);
+      color: white;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .waitlist-form button:hover { background: var(--teal-light); }
+
+    .waitlist-note {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* SUCCESS STATE */
+    .success-msg {
+      display: none;
+      background: rgba(42, 122, 122, 0.2);
+      border: 1px solid var(--teal);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 3px;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy-deep);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-note {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 6rem; }
+      .hero-visual { display: none; }
+      .domains { grid-template-columns: 1fr 1fr; }
+      .story-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .story-aside { position: static; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .steps::before { display: none; }
+      nav { padding: 1rem 1.5rem; }
+      .hero, .what, .how, .pain, .story, .waitlist { padding-left: 1.5rem; padding-right: 1.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      .domains { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .waitlist-form { flex-direction: column; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="30,4 56,20 56,44 30,58 4,44 4,20" stroke="#1a2744" stroke-width="2" fill="none"/>
+        <circle cx="30" cy="4" r="4" fill="#b8972a"/>
+        <circle cx="56" cy="20" r="4" fill="#b8972a"/>
+        <circle cx="4" cy="20" r="3" fill="#2a7a7a"/>
+        <circle cx="56" cy="44" r="3" fill="#2a7a7a"/>
+        <circle cx="4" cy="44" r="4" fill="#b8972a"/>
+        <circle cx="30" cy="58" r="3" fill="#1a2744"/>
+        <line x1="30" y1="4" x2="56" y2="44" stroke="#2a7a7a" stroke-width="1.5" opacity="0.5"/>
+        <line x1="4" y1="20" x2="56" y2="44" stroke="#b8972a" stroke-width="1.5" opacity="0.5"/>
+        <line x1="30" y1="4" x2="4" y2="44" stroke="#1a2744" stroke-width="1.5" opacity="0.3"/>
+      </svg>
+      <div class="nav-brand">RSM<span>™</span></div>
+    </div>
+    <a href="#waitlist" class="nav-cta">Join the Waitlist</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Restoration Systems Mapping™</div>
+      <h1>Healing that goes<br>to the <em>root.</em></h1>
+      <p class="hero-sub">
+        You've tried the apps. You've read the books. You've managed the symptoms.<br>
+        RSM is built for something deeper — finding where the pain truly lives and walking you toward lasting restoration.
+      </p>
+      <div class="hero-actions">
+        <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+        <a href="#what" class="btn-ghost">Learn more ↓</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <svg class="rsm-diagram" viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer hexagon -->
+        <polygon points="240,30 420,130 420,330 240,430 60,330 60,130" stroke="#1a2744" stroke-width="1.5" fill="rgba(26,39,68,0.02)" opacity="0.4"/>
+        <!-- Inner connections -->
+        <line x1="240" y1="30" x2="420" y2="330" stroke="#2a7a7a" stroke-width="1" opacity="0.3"/>
+        <line x1="60" y1="130" x2="420" y2="330" stroke="#b8972a" stroke-width="1" opacity="0.3"/>
+        <line x1="240" y1="30" x2="60" y2="330" stroke="#1a2744" stroke-width="1" opacity="0.2"/>
+        <line x1="420" y1="130" x2="60" y2="330" stroke="#2a7a7a" stroke-width="1" opacity="0.2"/>
+        <line x1="60" y1="130" x2="240" y2="430" stroke="#b8972a" stroke-width="1" opacity="0.2"/>
+        <line x1="420" y1="130" x2="240" y2="430" stroke="#1a2744" stroke-width="1" opacity="0.15"/>
+        <!-- Center circle -->
+        <circle cx="240" cy="230" r="50" fill="rgba(42,122,122,0.08)" stroke="#2a7a7a" stroke-width="1.5" opacity="0.5"/>
+        <circle cx="240" cy="230" r="25" fill="rgba(42,122,122,0.12)" stroke="#2a7a7a" stroke-width="1" opacity="0.6"/>
+        <!-- Domain nodes -->
+        <circle cx="240" cy="30" r="12" fill="#b8972a" opacity="0.9"/>
+        <circle cx="420" cy="130" r="12" fill="#b8972a" opacity="0.9"/>
+        <circle cx="420" cy="330" r="10" fill="#2a7a7a" opacity="0.9"/>
+        <circle cx="240" cy="430" r="10" fill="#2a7a7a" opacity="0.9"/>
+        <circle cx="60" cy="330" r="12" fill="#b8972a" opacity="0.9"/>
+        <circle cx="60" cy="130" r="10" fill="#1a2744" opacity="0.7"/>
+        <!-- Domain labels -->
+        <text x="240" y="12" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#b8972a" font-weight="500">Attachment</text>
+        <text x="440" y="133" text-anchor="start" font-family="DM Sans" font-size="11" fill="#b8972a" font-weight="500">Somatic</text>
+        <text x="440" y="333" text-anchor="start" font-family="DM Sans" font-size="11" fill="#2a7a7a" font-weight="500">Affect</text>
+        <text x="240" y="460" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#2a7a7a" font-weight="500">Dissociation</text>
+        <text x="40" y="333" text-anchor="end" font-family="DM Sans" font-size="11" fill="#b8972a" font-weight="500">Behavioral</text>
+        <text x="40" y="133" text-anchor="end" font-family="DM Sans" font-size="11" fill="#1a2744" font-weight="500">Self-Concept</text>
+        <!-- Center text -->
+        <text x="240" y="225" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" fill="#2a7a7a" font-style="italic">Your</text>
+        <text x="240" y="243" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" fill="#2a7a7a" font-style="italic">Healing</text>
+        <text x="240" y="261" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" fill="#2a7a7a" font-style="italic">Map</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- PAIN -->
+  <section class="pain">
+    <div class="pain-inner fade-in">
+      <h2>You've been carrying this<br>for a long time. <em>Longer than you should.</em></h2>
+      <p style="margin-top:1.5rem">
+        Most healing tools treat symptoms. They give you breathing exercises when you're anxious, journaling prompts when you're low, meditation when you can't sleep. And sometimes those things help — for a moment. But the weight comes back. Because the root was never found.
+      </p>
+    </div>
+  </section>
+
+  <!-- WHAT IS RSM -->
+  <section class="what" id="what">
+    <div class="fade-in">
+      <div class="section-label">What is RSM</div>
+      <h2>A map of where the pain lives — and how to heal it.</h2>
+      <p class="what-intro">
+        RSM begins with a comprehensive 97-question assessment across six domains of healing. Not to label you — but to see you. Fully. Then it builds a personalized healing plan around what you actually need.
+      </p>
+    </div>
+    <div class="domains fade-in">
+      <div class="domain-card">
+        <div class="domain-number">01</div>
+        <div class="domain-title">Attachment</div>
+        <div class="domain-desc">How trauma has shaped the way you connect, trust, and relate to others — and how to rebuild safe bonds.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-number">02</div>
+        <div class="domain-title">Somatic</div>
+        <div class="domain-desc">Where the body holds what the mind can't process — and how to release it through body-based practices.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-number">03</div>
+        <div class="domain-title">Affect Regulation</div>
+        <div class="domain-desc">Understanding your emotional landscape, your window of tolerance, and how to find your way back to center.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-number">04</div>
+        <div class="domain-title">Dissociation</div>
+        <div class="domain-desc">Recognizing when you've left the present — and tools to gently return to yourself.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-number">05</div>
+        <div class="domain-title">Behavioral</div>
+        <div class="domain-desc">The survival patterns that once protected you — and how to move beyond them toward chosen responses.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-number">06</div>
+        <div class="domain-title">Self-Concept</div>
+        <div class="domain-desc">Who trauma told you that you were — and reclaiming the truth of who you actually are.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KARLA'S STORY -->
+  <section class="story">
+    <div class="story-inner">
+      <div class="story-aside fade-in">
+        <div class="section-label">The Story Behind RSM</div>
+        <h2>Born from <em>lived</em> experience.</h2>
+        <div class="story-divider"></div>
+        <div class="story-attr">
+          Karla Barnett
+          <span>Founder, Restoration Systems Mapping™</span>
+        </div>
+      </div>
+      <div class="story-content fade-in">
+        <p>"I wasn't a clinician. I was a person in pain, searching for something that could actually reach the root of what I was carrying."</p>
+        <p>
+          After walking through her own trauma, Karla found herself frustrated by tools that scratched the surface but never went deep enough. She wasn't looking for another coping strategy. She needed something that could see her — all of her — and help her understand why the same wounds kept reopening.
+        </p>
+        <p>
+          The vision for RSM came not from a textbook, but from a quiet moment of clarity she credits entirely to God. A framework that maps the whole person across six interconnected systems — because trauma doesn't live in just one place, and neither does healing.
+        </p>
+        <p>
+          RSM is built on that vision. It's for anyone who is done with surface-level solutions and ready to do the real work — gently, at their own pace, held with care.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="how-header fade-in">
+      <div class="section-label">How It Works</div>
+      <h2>From assessment to action — in four steps.</h2>
+    </div>
+    <div class="steps fade-in">
+      <div class="step">
+        <div class="step-dot"><span>1</span></div>
+        <h3>Take the Assessment</h3>
+        <p>97 carefully crafted questions that see the whole you across all six healing domains.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span>2</span></div>
+        <h3>Receive Your Map</h3>
+        <p>A personalized healing map showing where you are across each domain — no labels, just clarity.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span>3</span></div>
+        <h3>Work Your Plan</h3>
+        <p>Matched strategies from our library of 43 evidence-based practices, tailored to your specific needs.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span>4</span></div>
+        <h3>Track Your Journey</h3>
+        <p>Check in regularly, watch your progress, and adjust as your healing evolves over time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section class="waitlist" id="waitlist">
+    <div class="waitlist-inner">
+      <div class="section-label">Coming Soon</div>
+      <h2>Your healing journey,<br><em>held with care.</em></h2>
+      <p>RSM is preparing to open its doors. Be among the first to experience a new kind of healing companion — one that goes all the way to the root.</p>
+      <form class="waitlist-form" onsubmit="handleSubmit(event)">
+        <input type="email" placeholder="Your email address" required id="email-input" />
+        <button type="submit">Join Waitlist</button>
+      </form>
+      <div class="waitlist-note">No spam. No pressure. Just a heads-up when we're ready for you.</div>
+      <div class="success-msg" id="success-msg">
+        ✓ You're on the list. We'll be in touch when RSM is ready.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">RSM™ — Restoration Systems Mapping™</div>
+    <div class="footer-note">© 2026 Restoration Systems Mapping. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-ins
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Waitlist form — getwaitlist.com
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('email-input').value;
+      const btn = document.querySelector('.waitlist-form button');
+      const form = document.querySelector('.waitlist-form');
+      const success = document.getElementById('success-msg');
+
+      btn.textContent = 'Joining...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('https://api.getwaitlist.com/api/v1/waiter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            waitlist_id: 32602,
+            api_key: '3de2b14ac419e5eec7d06d0377157dd8215ec80f08794ea3f6900ac61f7fa2c4'
+          })
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          success.style.display = 'block';
+        } else {
+          btn.textContent = 'Try Again';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        btn.textContent = 'Try Again';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
